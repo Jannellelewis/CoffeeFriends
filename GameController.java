@@ -12,6 +12,8 @@ public class GameController {
     public void startGame(String playerName, GameModel.Personality personality, String companionName) {
         model.initializeGame(playerName, personality, companionName);
         view.setCompanionPersonality(model.getCompanion().getPersonality());
+        view.setCharacterNames(model.getPlayer().getName(), model.getCompanion().getName());
+        view.setResponseLabels("Friendly", "Curious");
         view.showGameScreen();
         view.updateDialogue(model.getDialogueBank().getRandomLine(model.getCompanion().getPersonality()));
         view.updateFriendshipMeter(model.getFriendshipMeter().getValue());

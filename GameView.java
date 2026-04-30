@@ -4,13 +4,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridLayout;
+import java.awt.RenderingHints;
 
 public class GameView extends JFrame {
     private GameController controller;
@@ -20,15 +23,15 @@ public class GameView extends JFrame {
     private final JTextField companionNameField = new JTextField();
     private final JTextField companionPersonalityField = new JTextField();
     private final JProgressBar friendshipMeterBar = new JProgressBar(0, 100);
-    private final JTextArea dialogueArea = new JTextArea();
     private final JButton startButton = new JButton("Start");
     private final JButton responseButton1 = new JButton("Agree");
     private final JButton responseButton2 = new JButton("Encourage");
+    private final GameScreenPanel gameScreenPanel = new GameScreenPanel();
 
     public GameView() {
         setTitle("CoffeeFriends");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setPreferredSize(new Dimension(800, 600));
+        setPreferredSize(new Dimension(900, 720));
         initUI();
         pack();
         setLocationRelativeTo(null);
@@ -39,7 +42,7 @@ public class GameView extends JFrame {
     }
 
     private void initUI() {
-        JPanel rootPanel = new JPanel(new BorderLayout());
+        JPanel rootPanel = new JPanel(new BorderLayout(12, 12));
         JPanel customizationPanel = new JPanel(new GridLayout(5, 2, 8, 8));
 
         customizationPanel.add(new JLabel("Player Name:"));
@@ -56,18 +59,21 @@ public class GameView extends JFrame {
         customizationPanel.add(startButton);
 
         JPanel gamePanel = new JPanel(new BorderLayout(8, 8));
-        gamePanel.add(new JScrollPane(dialogueArea), BorderLayout.CENTER);
+        gamePanel.add(friendshipMeterBar, BorderLayout.NORTH);
+        gamePanel.add(gameScreenPanel, BorderLayout.CENTER);
 
         JPanel responsePanel = new JPanel(new GridLayout(1, 2, 8, 8));
         responsePanel.add(responseButton1);
         responsePanel.add(responseButton2);
-        gamePanel.add(responsePanel, BorderLayout.SOUTH);
+
+        JPanel responseContainer = new JPanel(new BorderLayout(4, 4));
+        responseContainer.add(new JLabel("Choose your response:"), BorderLayout.NORTH);
+        responseContainer.add(responsePanel, BorderLayout.CENTER);
+        gamePanel.add(responseContainer, BorderLayout.SOUTH);
 
         rootPanel.add(customizationPanel, BorderLayout.NORTH);
         rootPanel.add(gamePanel, BorderLayout.CENTER);
-        rootPanel.add(friendshipMeterBar, BorderLayout.SOUTH);
 
-        dialogueArea.setEditable(false);
         responseButton1.setEnabled(false);
         responseButton2.setEnabled(false);
 
@@ -100,9 +106,10 @@ public class GameView extends JFrame {
     }
 
     public void showGameScreen() {
-        dialogueArea.setText("Game screen ready.");
+        gameScreenPanel.setVisible(true);
         responseButton1.setEnabled(true);
         responseButton2.setEnabled(true);
+        gameScreenPanel.repaint();
     }
 
     public void updateFriendshipMeter(int value) {
@@ -110,17 +117,99 @@ public class GameView extends JFrame {
     }
 
     public void updateDialogue(String dialogue) {
-        dialogueArea.setText(dialogue);
+        gameScreenPanel.setCompanionDialogue(dialogue);
     }
 
     public void setCompanionPersonality(GameModel.Personality personality) {
         companionPersonalityField.setText(personality == null ? "Unknown" : personality.name());
     }
 
+    public void setCharacterNames(String playerName, String companionName) {
+        gameScreenPanel.setCharacterNames(playerName, companionName);
+    }
+
+    public void setResponseLabels(String option1, String option2) {
+        responseButton1.setText(option1);
+        responseButton2.setText(option2);
+    }
+
+    private class GameScreenPanel extends JPanel {
+        private String companionDialogue = "";
+        private String playerName = "You";
+        private String companionName = "Companion";
+
+        public GameScreenPanel() {
+            setPreferredSize(new Dimension(900, 520));
+        }
+
+        public void setCompanionDialogue(String dialogue) {
+            this.companionDialogue = dialogue;
+            repaint();
+        }
+
+        public void setCharacterNames(String playerName, String companionName) {
+            this.playerName = playerName.isEmpty() ? "You" : playerName;
+            this.companionName = companionName.isEmpty() ? "Companion" : companionName;
+            repaint();
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            Color background = new Color(255, 210, 220);
+            g2.setColor(background);
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+            int rows = 30;
+            int cols = 30;
+            int cellSize = Math.min(getWidth() / cols, getHeight() / rows);
+            g2.setColor(new Color(255, 190, 210));
+            for (int x = 0; x <= cols; x++) {
+                g2.drawLine(x * cellSize, 0, x * cellSize, cellSize * rows);
+            }
+            for (int y = 0; y <= rows; y++) {
+                g2.drawLine(0, y * cellSize, cellSize * cols, y * cellSize);
+            }
+
+            int playerX = getWidth() / 2 - 220;
+            int companionX = getWidth() / 2 + 100;
+            int characterY = getHeight() / 2 - 40;
+            int bodyWidth = 80;
+            int bodyHeight = 120;
+
+            g2.setColor(new Color(200, 100, 100));
+            g2.fillOval(playerX, characterY, bodyWidth, bodyHeight);
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("SansSerif", Font.BOLD, 16));
+            g2.drawString(playerName, playerX + 2, characterY - 10);
+
+            g2.setColor(new Color(120, 120, 200));
+            g2.fillOval(companionX, characterY, bodyWidth, bodyHeight);
+            g2.setColor(Color.BLACK);
+            g2.drawString(companionName, companionX + 2, characterY - 10);
+
+            drawSpeechBubble(g2, playerX - 10, characterY - 120, 220, 60, "Choose a response below.");
+            drawSpeechBubble(g2, companionX - 10, characterY - 160, 220, 70, companionDialogue);
+        }
+
+        private void drawSpeechBubble(Graphics2D g2, int x, int y, int width, int height, String text) {
+            Color bubbleColor = new Color(255, 255, 255, 230);
+            g2.setColor(bubbleColor);
+            g2.fillRoundRect(x, y, width, height, 20, 20);
+            g2.setColor(Color.BLACK);
+            g2.drawRoundRect(x, y, width, height, 20, 20);
+            g2.setFont(new Font("SansSerif", Font.PLAIN, 14));
+            g2.drawString(text, x + 10, y + 25);
+        }
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            GameModel model = new GameModel();
             GameView view = new GameView();
+            GameModel model = new GameModel();
             GameController controller = new GameController(model, view);
             view.setController(controller);
             view.showWindow();
