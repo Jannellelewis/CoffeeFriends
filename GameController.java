@@ -1,4 +1,5 @@
 import javax.swing.JOptionPane;
+import java.util.List;
 
 public class GameController {
     private final GameModel model;
@@ -13,9 +14,11 @@ public class GameController {
         model.initializeGame(playerName, personality, companionName);
         view.setCompanionPersonality(model.getCompanion().getPersonality());
         view.setCharacterNames(model.getPlayer().getName(), model.getCompanion().getName());
-        view.setResponseLabels("Friendly", "Curious");
+        String firstDialogue = model.getDialogueBank().getRandomLine(model.getCompanion().getPersonality());
+        List<String> responses = model.getDialogueBank().getResponseOptions(firstDialogue);
+        view.setResponseLabels(responses.get(0), responses.get(1));
         view.showGameScreen();
-        view.updateDialogue(model.getDialogueBank().getRandomLine(model.getCompanion().getPersonality()));
+        view.updateDialogue(firstDialogue);
         view.updateFriendshipMeter(model.getFriendshipMeter().getValue());
     }
 
@@ -29,6 +32,8 @@ public class GameController {
         }
 
         String nextLine = model.getDialogueBank().getRandomLine(model.getCompanion().getPersonality());
+        List<String> responses = model.getDialogueBank().getResponseOptions(nextLine);
+        view.setResponseLabels(responses.get(0), responses.get(1));
         view.updateDialogue(nextLine);
     }
 

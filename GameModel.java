@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -76,6 +77,7 @@ public class GameModel {
 
     public static class DialogueBank {
         private final Map<Personality, List<String>> companionLines = new EnumMap<>(Personality.class);
+        private final Map<String, List<String>> dialogueResponses = new HashMap<>();
         private final Random random = new Random();
 
         public DialogueBank() {
@@ -91,6 +93,18 @@ public class GameModel {
             companionLines.get(Personality.SHY).add("This coffee shop feels safe with you here.");
             companionLines.get(Personality.SHY).add("I'm a little nervous, but I'm happy you're here.");
             companionLines.get(Personality.SHY).add("Thank you for talking with me today.");
+
+            // Responses for cheerful dialogues
+            dialogueResponses.put("What a bright day to share a latte together!", List.of("Absolutely! The weather is perfect.", "Yes, it's a great day for coffee."));
+            dialogueResponses.put("I love chatting with you in this cozy coffee shop.", List.of("Me too! What's your favorite drink?", "This place has such a nice atmosphere."));
+            dialogueResponses.put("Your smile makes the coffee taste sweeter.", List.of("That's so sweet! Thank you.", "Aw, you're making me blush."));
+            dialogueResponses.put("Let's plan our next adventure after this cup!", List.of("Sounds exciting! What do you have in mind?", "I'm in! Adventures are fun."));
+
+            // Responses for shy dialogues
+            dialogueResponses.put("I like it when we sit quietly together.", List.of("I enjoy that too. It's peaceful.", "Quiet moments are nice."));
+            dialogueResponses.put("This coffee shop feels safe with you here.", List.of("I'm glad you feel that way.", "It's comforting to be here."));
+            dialogueResponses.put("I'm a little nervous, but I'm happy you're here.", List.of("No need to be nervous around me.", "I'm happy to be here with you."));
+            dialogueResponses.put("Thank you for talking with me today.", List.of("You're welcome. It was nice.", "Of course, anytime."));
         }
 
         public String getRandomLine(Personality personality) {
@@ -99,6 +113,10 @@ public class GameModel {
                 return "";
             }
             return lines.get(random.nextInt(lines.size()));
+        }
+
+        public List<String> getResponseOptions(String dialogue) {
+            return dialogueResponses.getOrDefault(dialogue, List.of("That's interesting.", "I agree."));
         }
     }
 

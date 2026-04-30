@@ -6,14 +6,17 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
 import java.awt.RenderingHints;
+import java.util.List;
 
 public class GameView extends JFrame {
     private GameController controller;
@@ -78,10 +81,14 @@ public class GameView extends JFrame {
         responseButton2.setEnabled(false);
 
         startButton.addActionListener(e -> {
+            String playerName = playerNameField.getText().trim();
+            GameModel.Personality personality = (GameModel.Personality) playerPersonalityCombo.getSelectedItem();
+            String companionName = companionNameField.getText().trim();
+            if (playerName.isEmpty() || companionName.isEmpty()) {
+                // Optionally show a message
+                return;
+            }
             if (controller != null) {
-                String playerName = playerNameField.getText().trim();
-                GameModel.Personality personality = (GameModel.Personality) playerPersonalityCombo.getSelectedItem();
-                String companionName = companionNameField.getText().trim();
                 controller.startGame(playerName, personality, companionName);
             }
         });
@@ -137,9 +144,16 @@ public class GameView extends JFrame {
         private String companionDialogue = "";
         private String playerName = "You";
         private String companionName = "Companion";
+        private int animationOffset = 0;
+        private Timer animationTimer;
 
         public GameScreenPanel() {
             setPreferredSize(new Dimension(900, 520));
+            animationTimer = new Timer(1000, e -> {
+                animationOffset = (animationOffset == 0) ? 5 : 0;
+                repaint();
+            });
+            animationTimer.start();
         }
 
         public void setCompanionDialogue(String dialogue) {
@@ -163,7 +177,7 @@ public class GameView extends JFrame {
             g2.setColor(background);
             g2.fillRect(0, 0, getWidth(), getHeight());
 
-            int rows = 30;
+            int rows = 20;
             int cols = 30;
             int cellSize = Math.min(getWidth() / cols, getHeight() / rows);
             g2.setColor(new Color(255, 190, 210));
@@ -176,7 +190,7 @@ public class GameView extends JFrame {
 
             int playerX = getWidth() / 2 - 220;
             int companionX = getWidth() / 2 + 100;
-            int characterY = getHeight() / 2 - 40;
+            int characterY = getHeight() / 2 - 40 + animationOffset;
             int bodyWidth = 80;
             int bodyHeight = 120;
 
@@ -184,15 +198,20 @@ public class GameView extends JFrame {
             g2.fillOval(playerX, characterY, bodyWidth, bodyHeight);
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("SansSerif", Font.BOLD, 16));
-            g2.drawString(playerName, playerX + 2, characterY - 10);
+            g2.drawString(playerName, playerX + 2, characterY - 10 + animationOffset);
 
             g2.setColor(new Color(120, 120, 200));
             g2.fillOval(companionX, characterY, bodyWidth, bodyHeight);
             g2.setColor(Color.BLACK);
-            g2.drawString(companionName, companionX + 2, characterY - 10);
+            g2.drawString(companionName, companionX + 2, characterY - 10 + animationOffset);
 
-            drawSpeechBubble(g2, playerX - 10, characterY - 120, 220, 60, "Choose a response below.");
-            drawSpeechBubble(g2, companionX - 10, characterY - 160, 220, 70, companionDialogue);
+            drawSpeechBubble(g2, playerX - 10, characterY - 140 + animationOffset, 220, 60, "Choose a response below.");
+            drawSpeechBubble(g2, companionX - 10, characterY - 140 + animationOffset, calculateBubbleWidth(companionDialogue), 60, companionDialogue);
+        }
+
+        private int calculateBubbleWidth(String text) {
+            FontMetrics fm = getFontMetrics(new Font("SansSerif", Font.PLAIN, 14));
+            return Math.max(150, fm.stringWidth(text) + 20);
         }
 
         private void drawSpeechBubble(Graphics2D g2, int x, int y, int width, int height, String text) {
@@ -202,7 +221,20 @@ public class GameView extends JFrame {
             g2.setColor(Color.BLACK);
             g2.drawRoundRect(x, y, width, height, 20, 20);
             g2.setFont(new Font("SansSerif", Font.PLAIN, 14));
-            g2.drawString(text, x + 10, y + 25);
+            FontMetrics fm = g2.getFontMetrics();
+            int textY = y + 20;
+            String[] words = text.split(" ");
+            StringBuilder line = new StringBuilder();
+            for (String word : words) {
+                if (fm.stringWidth(line + word) < width - 20) {
+                    line.append(word).append(" ");
+                } else {
+                    g2.drawString(line.toString(), x + 10, textY);
+                    textY += fm.getHeight();
+                    line = new StringBuilder(word + " ");
+                }
+            }
+            g2.drawString(line.toString(), x + 10, textY);
         }
     }
 
