@@ -46,3 +46,14 @@ RESULTS: when you press run, it opens a new window with a place to put your name
 CHANGES: i wanted to be able to pick my personality type and see what the companions is so i asked 'On the window i should be allowed to select my personality type and i should be able to see the personality the companion was randomly assigned. fix that on GameView so i can do that', it did that and now theres a drop down thing for selecting personality
 
 ERRORS: after i ran the initally prompt and before i made any changes, there were 4 problems in GameView, it said the value of the field GameView.model, Gameview.controller, GameView.responseButton1 and GameView.responseButton2 are not used. I looked at where these are and i think they just were forgotten to be called or havent been put to use yet. I asked AI this "When i ran that code, i was give 4 problems on GameView.java it said the value of the field GameView.model, Gameview.controller, GameView.responseButton1 and GameView.responseButton2 are not used. I think that it was forgotten to be called or it hasnt been used yet, what do you think. What did you resolve and why." It just said that those are warnings and to remove them/complete the problem i have to add responseButton 1 and 2 and attach action listeners to them
+
+
+
+Prompt 2
+USED: In GameView, make the background a 30x30 grid. The background color should be a light pink color. In the middle of the screen, place the character representing me (the one customizable) and next to it should be the companion. This will be the game screen. The character customization should be a little box above the game screen. The dialoge that the characters speak should be over their heads. For example if they say something its above the companions head and then i can choose how to respond based on whats above my head
+RESULTS: I like the background color and graph but im going to change the cells so they are square not rectangle. RIght now there are 2 circles in the middle of the screen with dialougue above their head, but they are too close so the dialogues overlap. Also you cant see the names or choose how to respond. 
+CHANGES: basically what i said before, i asked them this: 'Make it so the dialogues do not overlap eachother. Find a way to put the charcters name above their, which can be customized afetr you press start. There is also no button to select how to repsond, please add that'
+ERRORS: just a simple error, the dialogues overlapped, you couldnt see the characters names or choose how to respond. Not being able to respond was definetly the bigger 'problem' out of that because thats the whole point, that was a pretty easy thing to fix
+
+
+
