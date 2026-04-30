@@ -57,3 +57,14 @@ ERRORS: just a simple error, the dialogues overlapped, you couldnt see the chara
 
 
 
+Prompt 3
+USED: Make the characters move up and down just a little bit every 0.5 seconds on loop. The dialogues and names should move at the same time and pace as the characters. Make sure the dialogues fit inside the message bubbles, so adjust the message bubbles to fit the dialogue. Have the background be a 30x20 grid instead of a 30 by 30. Before giving the dialogue, make the user enter the name and personaloity before starting the conversation. For the dialogue instead of just saying what tone, give differant ways they could respond
+
+RESULTS: the characters move up and down but i feel like its to fast/to much so im going to adjust that. The dialogue now fits in the boxes but theyre at differant heights so i might change that. I also wanted it to give dialogue responses based on what the companion says not ones that are the same each time
+
+CHANGES: i told it 'Change it so the characters move up and down less and they do that every 1 second. The speech bubles should be at the same height. Make the dialogue response options related to what the companion is saying so it isnt random, there should be a curious and friendly respons that answers/respons accordingly based on what the companion has said'
+
+ERRORS: none but the prompt i put in was not clear enough so i had to tweak some parts
+
+
+
