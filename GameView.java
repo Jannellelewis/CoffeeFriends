@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,11 +16,11 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GridLayout;
-import java.awt.RenderingHints;
-import java.util.List;
+import java.awt.RenderingHints;import javax.swing.BoxLayout;import java.util.List;
 
 public class GameView extends JFrame {
     private GameController controller;
+    private GameModel model;
 
     private final JTextField playerNameField = new JTextField();
     private final JComboBox<GameModel.Personality> playerPersonalityCombo = new JComboBox<>(GameModel.Personality.values());
@@ -29,9 +30,18 @@ public class GameView extends JFrame {
     private final JButton startButton = new JButton("Start");
     private final JButton responseButton1 = new JButton("Agree");
     private final JButton responseButton2 = new JButton("Encourage");
+    private final JButton giftButton = new JButton("Give Gift");
+    private final JButton giftChoiceButton = new JButton("Give Gift");
+    private final JButton continueButton = new JButton("Continue");
+    private final JButton restartButton = new JButton("Restart");
+    private final JButton sideGiftButton = new JButton("🎁 Give Gift");
+    private final JButton resetButton = new JButton("Play Again");
     private final GameScreenPanel gameScreenPanel = new GameScreenPanel();
     private boolean isEndScreen = false;
+    private boolean showLevelUpChoices = false;
     private Color backgroundColor = new Color(255, 210, 220);
+    private CardLayout cardLayout = new CardLayout();
+    private JPanel cardPanel = new JPanel(cardLayout);
 
     public void setBackgroundColor(Color c) {
         this.backgroundColor = c;
@@ -49,6 +59,10 @@ public class GameView extends JFrame {
 
     public void setController(GameController controller) {
         this.controller = controller;
+    }
+
+    public void setModel(GameModel model) {
+        this.model = model;
     }
 
     private void initUI() {
@@ -71,20 +85,91 @@ public class GameView extends JFrame {
         JPanel gamePanel = new JPanel(new BorderLayout(8, 8));
         gamePanel.add(gameScreenPanel, BorderLayout.CENTER);
 
-        JPanel responsePanel = new JPanel(new GridLayout(1, 2, 8, 8));
+        JPanel responsePanel = new JPanel(new GridLayout(2, 2, 8, 8));
         responsePanel.add(responseButton1);
         responsePanel.add(responseButton2);
+        responsePanel.add(giftButton);
+        responsePanel.add(resetButton);
+
+        JPanel choicePanel = new JPanel(new GridLayout(1, 3, 8, 8));
+        choicePanel.add(giftChoiceButton);
+        choicePanel.add(continueButton);
+        choicePanel.add(restartButton);
 
         JPanel responseContainer = new JPanel(new BorderLayout(4, 4));
         responseContainer.add(new JLabel("Choose your response:"), BorderLayout.NORTH);
+        
+        // Use a CardLayout to switch between response panel and choice panel
         responseContainer.add(responsePanel, BorderLayout.CENTER);
+        
+        // Add choice panel to a separate area that will be shown/hidden
+        JPanel choicePanelContainer = new JPanel(new BorderLayout(4, 4));
+        choicePanelContainer.add(choicePanel, BorderLayout.CENTER);
+        choicePanelContainer.setVisible(false);
+        
+        // Stack both panels
+        JPanel buttonStackPanel = new JPanel();
+        buttonStackPanel.setLayout(new BoxLayout(buttonStackPanel, BoxLayout.Y_AXIS));
+        buttonStackPanel.add(responsePanel);
+        buttonStackPanel.add(choicePanel);
+        
+        responseContainer.add(buttonStackPanel, BorderLayout.CENTER);
         gamePanel.add(responseContainer, BorderLayout.SOUTH);
 
-        rootPanel.add(customizationPanel, BorderLayout.NORTH);
-        rootPanel.add(gamePanel, BorderLayout.CENTER);
+        // Side gift button
+        JPanel sidePanel = new JPanel(new BorderLayout(4, 4));
+        sidePanel.add(sideGiftButton, BorderLayout.CENTER);
+        gamePanel.add(sidePanel, BorderLayout.EAST);
+
+        cardPanel.add(customizationPanel, "customization");
+        cardPanel.add(gamePanel, "game");
+
+        rootPanel.add(cardPanel, BorderLayout.CENTER);
 
         responseButton1.setEnabled(false);
         responseButton2.setEnabled(false);
+        giftButton.setEnabled(false);
+        giftButton.setVisible(false);
+        resetButton.setEnabled(false);
+        resetButton.setVisible(false);
+        giftChoiceButton.setEnabled(false);
+        giftChoiceButton.setVisible(false);
+        continueButton.setEnabled(false);
+        continueButton.setVisible(false);
+        restartButton.setEnabled(false);
+        restartButton.setVisible(false);
+        sideGiftButton.setEnabled(false);
+        sideGiftButton.setVisible(false);
+
+        sideGiftButton.addActionListener(e -> {
+            if (controller != null) {
+                controller.handleSideGiftClick();
+            }
+        });
+
+        giftChoiceButton.addActionListener(e -> {
+            if (controller != null) {
+                controller.handleLevelUpChoice("gift");
+            }
+        });
+
+        continueButton.addActionListener(e -> {
+            if (controller != null) {
+                controller.handleLevelUpChoice("continue");
+            }
+        });
+
+        restartButton.addActionListener(e -> {
+            if (controller != null) {
+                controller.handleLevelUpChoice("restart");
+            }
+        });
+
+        resetButton.addActionListener(e -> {
+            if (controller != null) {
+                controller.resetGame();
+            }
+        });
 
         startButton.addActionListener(e -> {
             String playerName = playerNameField.getText().trim();
@@ -119,7 +204,7 @@ public class GameView extends JFrame {
     }
 
     public void showGameScreen() {
-        gameScreenPanel.setVisible(true);
+        cardLayout.show(cardPanel, "game");
         responseButton1.setEnabled(true);
         responseButton2.setEnabled(true);
         gameScreenPanel.repaint();
@@ -151,6 +236,74 @@ public class GameView extends JFrame {
         gameScreenPanel.setEndScreen(level);
         responseButton1.setEnabled(false);
         responseButton2.setEnabled(false);
+        giftButton.setVisible(false);
+        sideGiftButton.setVisible(false);
+        giftChoiceButton.setVisible(false);
+        continueButton.setVisible(false);
+        restartButton.setVisible(false);
+        gameScreenPanel.repaint();
+    }
+
+    public void showLevelUpChoices() {
+        showLevelUpChoices = true;
+        responseButton1.setEnabled(false);
+        responseButton2.setEnabled(false);
+        giftChoiceButton.setVisible(true);
+        giftChoiceButton.setEnabled(true);
+        continueButton.setVisible(true);
+        continueButton.setEnabled(true);
+        restartButton.setVisible(true);
+        restartButton.setEnabled(true);
+        gameScreenPanel.repaint();
+    }
+
+    public void hideLevelUpChoices() {
+        showLevelUpChoices = false;
+        giftChoiceButton.setVisible(false);
+        giftChoiceButton.setEnabled(false);
+        continueButton.setVisible(false);
+        continueButton.setEnabled(false);
+        restartButton.setVisible(false);
+        restartButton.setEnabled(false);
+    }
+
+    public void showCustomizationScreen() {
+        cardLayout.show(cardPanel, "customization");
+        // Reset view state
+        isEndScreen = false;
+        showLevelUpChoices = false;
+        gameScreenPanel.setEndScreen(false);
+        gameScreenPanel.setPeakFriendship(false);
+        gameScreenPanel.setShowGiftBanner(false);
+        responseButton1.setEnabled(false);
+        responseButton2.setEnabled(false);
+        giftButton.setVisible(false);
+        resetButton.setVisible(false);
+        sideGiftButton.setVisible(false);
+        giftChoiceButton.setVisible(false);
+        continueButton.setVisible(false);
+        restartButton.setVisible(false);
+    }
+
+    public void updateGiftButtonVisibility(int level) {
+        if (level >= 3 && !model.hasGivenGift()) {
+            sideGiftButton.setVisible(true);
+            sideGiftButton.setEnabled(true);
+            gameScreenPanel.setShowGiftBanner(true);
+        } else {
+            sideGiftButton.setVisible(false);
+            sideGiftButton.setEnabled(false);
+            gameScreenPanel.setShowGiftBanner(false);
+        }
+    }
+
+    public void showPeakFriendshipScreen() {
+        gameScreenPanel.setPeakFriendship();
+        responseButton1.setEnabled(false);
+        responseButton2.setEnabled(false);
+        giftButton.setVisible(false);
+        resetButton.setVisible(true);
+        resetButton.setEnabled(true);
         gameScreenPanel.repaint();
     }
 
@@ -163,6 +316,8 @@ public class GameView extends JFrame {
         private int friendshipValue = 0;
         private int friendshipLevel = 1;
         private boolean endScreen = false;
+        private boolean peakFriendship = false;
+        private boolean showGiftBanner = false;
 
         public GameScreenPanel() {
             setPreferredSize(new Dimension(900, 520));
@@ -198,11 +353,42 @@ public class GameView extends JFrame {
             repaint();
         }
 
+        public void setEndScreen(boolean show) {
+            this.endScreen = show;
+            repaint();
+        }
+
+        public void setPeakFriendship() {
+            this.peakFriendship = true;
+            repaint();
+        }
+
+        public void setPeakFriendship(boolean show) {
+            this.peakFriendship = show;
+            repaint();
+        }
+
+        public void setShowGiftBanner(boolean show) {
+            this.showGiftBanner = show;
+            repaint();
+        }
+
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            if (peakFriendship) {
+                g2.setColor(new Color(255, 215, 0)); // gold
+                g2.fillRect(0, 0, getWidth(), getHeight());
+                g2.setColor(Color.BLACK);
+                g2.setFont(new Font("SansSerif", Font.BOLD, 48));
+                g2.drawString("We have reached PEAK friendship", getWidth() / 2 - 350, getHeight() / 2 - 50);
+                g2.setFont(new Font("SansSerif", Font.BOLD, 24));
+                g2.drawString("With " + companionName, getWidth() / 2 - 80, getHeight() / 2 + 50);
+                return;
+            }
 
             if (endScreen) {
                 g2.setColor(new Color(173, 216, 230)); // light blue
@@ -252,9 +438,12 @@ public class GameView extends JFrame {
             int barY = characterY - 50 + animationOffset;
             int barWidth = 120;
             int barHeight = 20;
+            int maxXP = friendshipLevel * 5;
+            float ratio = (float) friendshipValue / maxXP;
+            ratio = Math.min(1.0f, ratio); // cap at 1.0
+            
             g2.setColor(Color.GRAY);
             g2.fillRect(barX, barY, barWidth, barHeight);
-            float ratio = (float) friendshipValue / 100;
             int red = (int) (255 * (1 - ratio));
             int green = (int) (255 * ratio);
             g2.setColor(new Color(red, green, 0));
@@ -263,6 +452,16 @@ public class GameView extends JFrame {
             g2.drawRect(barX, barY, barWidth, barHeight);
             g2.setFont(new Font("SansSerif", Font.PLAIN, 12));
             g2.drawString("Level " + friendshipLevel, barX + barWidth + 10, barY + 15);
+            g2.drawString(friendshipValue + "/" + maxXP + " XP", barX - 50, barY + 15);
+
+            // Draw gift banner
+            if (showGiftBanner) {
+                g2.setColor(new Color(255, 215, 0, 230)); // gold with transparency
+                g2.fillRect(0, 0, getWidth(), 50);
+                g2.setColor(Color.BLACK);
+                g2.setFont(new Font("SansSerif", Font.BOLD, 18));
+                g2.drawString("🎁 Gift Unlocked! Click the gift button to give it.", 50, 35);
+            }
 
             drawSpeechBubble(g2, playerX - 10, characterY - 140 + animationOffset, 220, 60, "Choose a response below.");
             drawSpeechBubble(g2, companionX - 10, characterY - 140 + animationOffset, calculateBubbleWidth(companionDialogue), 60, companionDialogue);

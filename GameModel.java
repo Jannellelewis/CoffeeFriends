@@ -53,7 +53,6 @@ public class GameModel {
     }
 
     public static class FriendshipMeter {
-        private static final int MAX_VALUE = 100;
         private final Random random = new Random();
         private int value;
         private int level;
@@ -71,21 +70,35 @@ public class GameModel {
             return level;
         }
 
+        public int getXpNeededForLevel() {
+            return level * 5;
+        }
+
         public void increment() {
             int increment = random.nextInt(4) + 1; // 1-4
-            value = Math.min(MAX_VALUE, value + increment);
+            int xpNeeded = getXpNeededForLevel();
+            value += increment;
         }
 
         public void setValue(int value) {
-            this.value = Math.max(0, Math.min(MAX_VALUE, value));
+            this.value = Math.max(0, value);
         }
 
         public void levelUp() {
             this.level++;
+            this.value = 0; // reset for next level
+        }
+
+        public void resetLevel() {
+            this.level = 1;
         }
 
         public boolean isFull() {
-            return value >= MAX_VALUE;
+            return value >= getXpNeededForLevel();
+        }
+
+        public boolean canGiveGift() {
+            return level >= 3;
         }
     }
 
@@ -138,10 +151,19 @@ public class GameModel {
     private Companion companion;
     private final FriendshipMeter friendshipMeter;
     private final DialogueBank dialogueBank;
+    private boolean hasGivenGift = false;
 
     public GameModel() {
         this.friendshipMeter = new FriendshipMeter();
         this.dialogueBank = new DialogueBank();
+    }
+
+    public boolean hasGivenGift() {
+        return hasGivenGift;
+    }
+
+    public void setGiftGiven(boolean given) {
+        this.hasGivenGift = given;
     }
 
     public void initializeGame(String playerName, Personality playerPersonality, String companionName) {
@@ -164,5 +186,11 @@ public class GameModel {
 
     public DialogueBank getDialogueBank() {
         return dialogueBank;
+    }
+
+    public void resetFriendshipMeter() {
+        this.friendshipMeter.setValue(0);
+        this.friendshipMeter.resetLevel();
+        this.hasGivenGift = false;
     }
 }
