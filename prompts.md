@@ -71,3 +71,18 @@ ERRORS: none but the prompt i put in was not clear enough so i had to tweak some
 
 
 
+Prompt 4: 
+USED: The friendship bar should be above the companions head, as it gets closer to being full slowly chnages its color into green. Each time i choose a response, it should give a random amount of XP to the friendship bar, ranging from 1-4. Once the friendship bar has been fully complete, make a new screen with a differant color background and the companion should congratulate us on reaching a new level in friendship. On the side there should be a little display of what level our friendship is. Also fix the pink grid background so it fits the whole window and each cell is a perfect square
+
+RESULTS: there is a bar above the companiomns head that goes from red to green the more dialogue you go through, i asked it to fix the background and it never did 
+
+CHANGES: i asked it 'Fix the pink grid background so that the whole window is part iof the grid and change the shape of each cell to make them perfect squares'
+
+ERRORS: it was supposed to congratulate us each time the friendship bar reaches a new level but it didnt so i asked it 'Each time the friendship bar is full, change the color of the background to a differant pastel color, but the grid should remain. Also everytime the friendship bar fills up have the companion celebrate and say they are happy to get to know us' But that prompt caused an error (Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problems: 
+        The method getCompanionPersonality() is undefined for the type GameModel
+        The method getRandomDialogue(GameModel.Personality) is undefined for the type GameModel.DialogueBank
+        The method getResponsesForDialogue(String) is undefined for the type GameModel.DialogueBank) 
+which tells me that the types are not assigned correctly so i asked again and said 'Everytime i try to play the game and choose a dialogue this pops up: Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problems: 
+        The method getCompanionPersonality() is undefined for the type GameModel
+        The method getRandomDialogue(GameModel.Personality) is undefined for the type GameModel.DialogueBank
+        The method getResponsesForDialogue(String) is undefined for the type GameModel.DialogueBank and i dont see the dialogue choices, explain whats wrong then fix it'
