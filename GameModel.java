@@ -54,20 +54,34 @@ public class GameModel {
 
     public static class FriendshipMeter {
         private static final int MAX_VALUE = 100;
-        private final int incrementAmount;
+        private final Random random = new Random();
         private int value;
+        private int level;
 
         public FriendshipMeter() {
-            this.incrementAmount = 10;
             this.value = 0;
+            this.level = 1;
         }
 
         public int getValue() {
             return value;
         }
 
+        public int getLevel() {
+            return level;
+        }
+
         public void increment() {
-            value = Math.min(MAX_VALUE, value + incrementAmount);
+            int increment = random.nextInt(4) + 1; // 1-4
+            value = Math.min(MAX_VALUE, value + increment);
+        }
+
+        public void setValue(int value) {
+            this.value = Math.max(0, Math.min(MAX_VALUE, value));
+        }
+
+        public void levelUp() {
+            this.level++;
         }
 
         public boolean isFull() {
