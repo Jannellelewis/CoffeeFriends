@@ -86,3 +86,16 @@ which tells me that the types are not assigned correctly so i asked again and sa
         The method getCompanionPersonality() is undefined for the type GameModel
         The method getRandomDialogue(GameModel.Personality) is undefined for the type GameModel.DialogueBank
         The method getResponsesForDialogue(String) is undefined for the type GameModel.DialogueBank and i dont see the dialogue choices, explain whats wrong then fix it'
+After i asked this it fixed it and said that the types were wrong then fixed it!
+
+
+
+Prompt 5 
+USED: The starting friendship level should be 5 xp, each level after that increases by the prfevious number plus 5. Once the player has reached level 3, create an option where we can give them companion a gift. Once they open the gift the game ends with the the word 'We have reached PEAK friendship' written on a reset screen
+
+RESULTS: now it shows how much XP we have gotten per level, also when we move levels and the BG changes colors it asks if we want to continue 2 times (going to fix that), once we get to the 3rd level there is an option to give a gift at the bottom (im going to ask it to make the option bigger or have something notify the user)
+
+CHANGES: I asked: 'Whenever we achieve a new level, before continuing the dialogue BUT after the companion congratulates us, make it so the screen asks if we want to gift the companion, continue or restart. If we gift the companion keep the screen from before, if we choose not to gift the companion, still allow it as a button on the SIDE of the screen. Once we are able to gift the add a little banner or notification that tells us we have unlocked a gift to give to the companion'
+
+ERRORS: once i ran the prompt from the changes and got to a point where i wanted to restart it wouldnt let me do that, stays at that spot so i said 'Whenever i get the option to try and restart, click the button does nothing, connect it to be able to restart' then it fixed it 
+NOTE: i have been geeting the message that i have reached the AI maz amount of usage so i cant do much
