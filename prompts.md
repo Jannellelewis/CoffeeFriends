@@ -108,3 +108,14 @@ RESULTS: works almost exactly like the last prompt, for some reason after you re
 CHANGES: it did do much so i had to work through that (this is the part in error). After the error was resolved it worked pretty well
 
 ERRORS: I told it 'When the friendhsip level reaches 2, i can no longer choose a response to continue the converstion. This isnt what i wanted i should be able to keep responding no matter the level. The onky thing that determines if you can continue the dialogue and conversation is if the gift hasnt been given AND your under friendship level 5. Please fix accordingly'
+
+
+
+Prompt 7: 
+USED: this is my full GameView.java (the whole code from GameView before this commit/save), This code is way to long please fix it by doing PURE REFACTORING. do NOT change the game behaviour. Break it into smaller files or modules based on related fucntions/information
+
+RESULTS: This did help reduce the number of lines in the game view but its still 300+
+
+CHANGES: right now VSC says there are 5 problems so im going to ask it to fix that after i fix the amount of lines per code, i asked it 'That did help but the files should not be over 300 lines of code, make sure the files arent that length and make a way so they dont go over it.' This worked well and helped the code be easier to access, it added a customization pannel and similar stuff so its not 500 lines in GameView. the next thing i asked it was just to make sure that the AI wasnt losing itself and forgetting it had things 'There are 5 problems when i run it (inserted screen shot of the problems), Please clean the code and/or resolve those problems so they dont become a bigger issue later'
+
+ERRORS: no errors just slight tweaks
