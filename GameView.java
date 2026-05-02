@@ -244,12 +244,17 @@ public class GameView extends JFrame {
         gameScreenPanel.repaint();
     }
 
-    public void showLevelUpChoices() {
+    public void showLevelUpChoices(boolean canGift) {
         showLevelUpChoices = true;
         responseButton1.setEnabled(false);
         responseButton2.setEnabled(false);
-        giftChoiceButton.setVisible(true);
-        giftChoiceButton.setEnabled(true);
+        if (canGift) {
+            giftChoiceButton.setVisible(true);
+            giftChoiceButton.setEnabled(true);
+        } else {
+            giftChoiceButton.setVisible(false);
+            giftChoiceButton.setEnabled(false);
+        }
         continueButton.setVisible(true);
         continueButton.setEnabled(true);
         restartButton.setVisible(true);
@@ -265,6 +270,11 @@ public class GameView extends JFrame {
         continueButton.setEnabled(false);
         restartButton.setVisible(false);
         restartButton.setEnabled(false);
+    }
+
+    public void enableResponseButtons() {
+        responseButton1.setEnabled(true);
+        responseButton2.setEnabled(true);
     }
 
     public void showCustomizationScreen() {
@@ -297,13 +307,29 @@ public class GameView extends JFrame {
         }
     }
 
-    public void showPeakFriendshipScreen() {
-        gameScreenPanel.setPeakFriendship();
+    public void showCompanionLeavesScreen() {
+        gameScreenPanel.setCompanionLeaves();
         responseButton1.setEnabled(false);
         responseButton2.setEnabled(false);
         giftButton.setVisible(false);
-        resetButton.setVisible(true);
-        resetButton.setEnabled(true);
+        sideGiftButton.setVisible(false);
+        giftChoiceButton.setVisible(false);
+        continueButton.setVisible(false);
+        restartButton.setVisible(true);
+        restartButton.setEnabled(true);
+        gameScreenPanel.repaint();
+    }
+
+    public void showPeakFriendshipScreen() {
+        gameScreenPanel.setPeakFriendship(true);
+        responseButton1.setEnabled(false);
+        responseButton2.setEnabled(false);
+        giftButton.setVisible(false);
+        sideGiftButton.setVisible(false);
+        giftChoiceButton.setVisible(false);
+        continueButton.setVisible(false);
+        restartButton.setVisible(true);
+        restartButton.setEnabled(true);
         gameScreenPanel.repaint();
     }
 
@@ -318,6 +344,7 @@ public class GameView extends JFrame {
         private boolean endScreen = false;
         private boolean peakFriendship = false;
         private boolean showGiftBanner = false;
+        private boolean companionLeaves = false;
 
         public GameScreenPanel() {
             setPreferredSize(new Dimension(900, 520));
@@ -368,6 +395,11 @@ public class GameView extends JFrame {
             repaint();
         }
 
+        public void setCompanionLeaves() {
+            this.companionLeaves = true;
+            repaint();
+        }
+
         public void setShowGiftBanner(boolean show) {
             this.showGiftBanner = show;
             repaint();
@@ -387,6 +419,19 @@ public class GameView extends JFrame {
                 g2.drawString("We have reached PEAK friendship", getWidth() / 2 - 350, getHeight() / 2 - 50);
                 g2.setFont(new Font("SansSerif", Font.BOLD, 24));
                 g2.drawString("With " + companionName, getWidth() / 2 - 80, getHeight() / 2 + 50);
+                return;
+            }
+
+            if (companionLeaves) {
+                g2.setColor(new Color(255, 255, 224)); // light yellow
+                g2.fillRect(0, 0, getWidth(), getHeight());
+                g2.setColor(Color.BLACK);
+                g2.setFont(new Font("SansSerif", Font.BOLD, 36));
+                g2.drawString("Thank you for being such a great friend!", getWidth() / 2 - 300, getHeight() / 2 - 100);
+                g2.drawString(companionName + " has given you a gift and must leave now.", getWidth() / 2 - 250, getHeight() / 2 - 50);
+                g2.drawString("But our friendship will always be cherished.", getWidth() / 2 - 250, getHeight() / 2);
+                g2.setFont(new Font("SansSerif", Font.BOLD, 24));
+                g2.drawString("Click Restart to play again.", getWidth() / 2 - 150, getHeight() / 2 + 100);
                 return;
             }
 
@@ -469,7 +514,9 @@ public class GameView extends JFrame {
 
         private int calculateBubbleWidth(String text) {
             FontMetrics fm = getFontMetrics(new Font("SansSerif", Font.PLAIN, 14));
-            return Math.max(150, fm.stringWidth(text) + 20);
+            int textWidth = fm.stringWidth(text);
+            int maxWidth = Math.min(500, getWidth() - 100); // Leave some margin
+            return Math.max(150, Math.min(maxWidth, textWidth + 20));
         }
 
         private void drawSpeechBubble(Graphics2D g2, int x, int y, int width, int height, String text) {

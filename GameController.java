@@ -55,12 +55,19 @@ public class GameController {
             if (val >= maxXP) {
                 model.getFriendshipMeter().levelUp();
                 int newLevel = model.getFriendshipMeter().getLevel();
+                
+                if (newLevel == 5 && !model.hasGivenGift()) {
+                    // Special ending: companion gives gift and leaves
+                    view.showCompanionLeavesScreen();
+                    return;
+                }
+                
                 colorIndex = (colorIndex + 1) % backgroundColors.size();
                 view.setBackgroundColor(backgroundColors.get(colorIndex));
                 view.updateDialogue("Yay! I'm so happy to get to know you better! Friendship Level " + newLevel + "!");
                 view.updateFriendshipMeter(0, newLevel);
                 awaitingLevelUpChoice = true;
-                view.showLevelUpChoices();
+                view.showLevelUpChoices(newLevel >= 3 && !model.hasGivenGift());
             } else {
                 view.updateFriendshipMeter(val, model.getFriendshipMeter().getLevel());
                 startNewDialogue();
@@ -84,6 +91,7 @@ public class GameController {
         } else if (choice.equals("continue")) {
             startNewDialogue();
             view.updateGiftButtonVisibility(model.getFriendshipMeter().getLevel());
+            view.enableResponseButtons();
         } else if (choice.equals("restart")) {
             resetGame();
         }
@@ -104,6 +112,14 @@ public class GameController {
         model.resetFriendshipMeter();
         colorIndex = 0;
         view.setBackgroundColor(new Color(255, 210, 220));
+        view.showCustomizationScreen();
+    }
+
+    public static void main(String[] args) {
+        GameModel model = new GameModel();
+        GameView view = new GameView();
+        GameController controller = new GameController(model, view);
+        view.setController(controller);
         view.showCustomizationScreen();
     }
 }
