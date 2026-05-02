@@ -98,4 +98,13 @@ RESULTS: now it shows how much XP we have gotten per level, also when we move le
 CHANGES: I asked: 'Whenever we achieve a new level, before continuing the dialogue BUT after the companion congratulates us, make it so the screen asks if we want to gift the companion, continue or restart. If we gift the companion keep the screen from before, if we choose not to gift the companion, still allow it as a button on the SIDE of the screen. Once we are able to gift the add a little banner or notification that tells us we have unlocked a gift to give to the companion'
 
 ERRORS: once i ran the prompt from the changes and got to a point where i wanted to restart it wouldnt let me do that, stays at that spot so i said 'Whenever i get the option to try and restart, click the button does nothing, connect it to be able to restart' then it fixed it 
-NOTE: i have been geeting the message that i have reached the AI maz amount of usage so i cant do much
+
+
+Propmt 6: 
+USED: Now change it so that the option to give a gift ONLY appears once the friendship bar has hit level 3. Also the dialogue os currently cutoff, make sue it fits inside the window. If the user choose NOT to give the gift, it should be able to give AFTER level 3. If the friendship level has reached level 5 without giving the companion a gift, have the companion give US a gift and thank us for being friends and that they have to go. Them leaving restarts the game.
+
+RESULTS: works almost exactly like the last prompt, for some reason after you reach level 2 of friendship you cannot pick responses to keep the dialogur going, i fixed this in the ERRORS part. Now you can continue the dialogue afetr level 2 and if you choose not to give the gift on level 3 it gives you a banner notfication of where to gift and a box. works how i want it to !! but the restart screen where it thanks for being a friend is wierdly off center
+
+CHANGES: it did do much so i had to work through that (this is the part in error). After the error was resolved it worked pretty well
+
+ERRORS: I told it 'When the friendhsip level reaches 2, i can no longer choose a response to continue the converstion. This isnt what i wanted i should be able to keep responding no matter the level. The onky thing that determines if you can continue the dialogue and conversation is if the gift hasnt been given AND your under friendship level 5. Please fix accordingly'
