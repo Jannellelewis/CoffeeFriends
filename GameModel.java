@@ -76,7 +76,6 @@ public class GameModel {
 
         public void increment() {
             int increment = random.nextInt(4) + 1; // 1-4
-            int xpNeeded = getXpNeededForLevel();
             value += increment;
         }
 

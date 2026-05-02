@@ -1,4 +1,3 @@
-import javax.swing.JOptionPane;
 import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
@@ -102,10 +101,6 @@ public class GameController {
             model.setGiftGiven(true);
             view.showPeakFriendshipScreen();
         }
-    }
-
-    private void showEndScreen() {
-        view.showEndScreen(model.getFriendshipMeter().getLevel());
     }
 
     public void resetGame() {
