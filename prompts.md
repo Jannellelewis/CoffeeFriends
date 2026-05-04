@@ -119,3 +119,14 @@ RESULTS: This did help reduce the number of lines in the game view but its still
 CHANGES: right now VSC says there are 5 problems so im going to ask it to fix that after i fix the amount of lines per code, i asked it 'That did help but the files should not be over 300 lines of code, make sure the files arent that length and make a way so they dont go over it.' This worked well and helped the code be easier to access, it added a customization pannel and similar stuff so its not 500 lines in GameView. the next thing i asked it was just to make sure that the AI wasnt losing itself and forgetting it had things 'There are 5 problems when i run it (inserted screen shot of the problems), Please clean the code and/or resolve those problems so they dont become a bigger issue later'
 
 ERRORS: no errors just slight tweaks
+
+
+
+Prompt 8: 
+USED: I want the user to be able to customize the color of the character. In CustimizationPanel.java, make it so the user can enter a hex code and it will change the color of the character to that color. The user should only be able to chnage the color of their character NOT the companion, the companion should be a randomly selected color
+
+RESULTS: i can choose my charcters color and it stays the whole game round. The companions color is randomly chosen
+
+CHANGES: the dialogue is still not fitting on the window so i asked: The dialogue is not fitting inside the window. Make sure that the message bubble is bigger than the window so the text can be seen (this is when i ran out of the copilot monthly chat requests so i switched to claude)
+
+ERRORS:
