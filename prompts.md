@@ -130,5 +130,3 @@ RESULTS: i can choose my charcters color and it stays the whole game round. The 
 CHANGES:  (this is when i ran out of the copilot monthly chat requests so i switched to windsurf and its not as good as copilot so)
 
 ERRORS:none
-
-ERRORS:
