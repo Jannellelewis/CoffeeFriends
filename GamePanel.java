@@ -133,6 +133,10 @@ public class GamePanel extends JPanel {
         gameScreenPanel.setCharacterNames(playerName, companionName);
     }
 
+    public void setCharacterColors(java.awt.Color playerColor, java.awt.Color companionColor) {
+        gameScreenPanel.setCharacterColors(playerColor, companionColor);
+    }
+
     public void setResponseLabels(String option1, String option2) {
         responseButton1.setText(option1);
         responseButton2.setText(option2);

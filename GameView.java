@@ -74,6 +74,10 @@ public class GameView extends JFrame {
         gamePanel.setCharacterNames(playerName, companionName);
     }
 
+    public void setCharacterColors(java.awt.Color playerColor, java.awt.Color companionColor) {
+        gamePanel.setCharacterColors(playerColor, companionColor);
+    }
+
     public void setResponseLabels(String option1, String option2) {
         gamePanel.setResponseLabels(option1, option2);
     }

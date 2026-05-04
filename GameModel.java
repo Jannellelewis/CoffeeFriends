@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -19,10 +20,12 @@ public class GameModel {
     public static class Player {
         private final String name;
         private final Personality personality;
+        private final Color color;
 
-        public Player(String name, Personality personality) {
+        public Player(String name, Personality personality, Color color) {
             this.name = name;
             this.personality = personality;
+            this.color = color;
         }
 
         public String getName() {
@@ -31,16 +34,22 @@ public class GameModel {
 
         public Personality getPersonality() {
             return personality;
+        }
+
+        public Color getColor() {
+            return color;
         }
     }
 
     public static class Companion {
         private final String name;
         private final Personality personality;
+        private final Color color;
 
-        public Companion(String name, Personality personality) {
+        public Companion(String name, Personality personality, Color color) {
             this.name = name;
             this.personality = personality;
+            this.color = color;
         }
 
         public String getName() {
@@ -49,6 +58,10 @@ public class GameModel {
 
         public Personality getPersonality() {
             return personality;
+        }
+
+        public Color getColor() {
+            return color;
         }
     }
 
@@ -165,9 +178,10 @@ public class GameModel {
         this.hasGivenGift = given;
     }
 
-    public void initializeGame(String playerName, Personality playerPersonality, String companionName) {
-        this.player = new Player(playerName, playerPersonality);
-        this.companion = new Companion(companionName, Personality.random());
+    public void initializeGame(String playerName, Personality playerPersonality, String companionName, Color playerColor) {
+        this.player = new Player(playerName, playerPersonality, playerColor);
+        Color companionColor = new Color(new Random().nextInt(256), new Random().nextInt(256), new Random().nextInt(256));
+        this.companion = new Companion(companionName, Personality.random(), companionColor);
         this.friendshipMeter.increment(); // placeholder for initialization behavior
     }
 

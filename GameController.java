@@ -29,10 +29,11 @@ public class GameController {
         view.setModel(model);
     }
 
-    public void startGame(String playerName, GameModel.Personality personality, String companionName) {
-        model.initializeGame(playerName, personality, companionName);
+    public void startGame(String playerName, GameModel.Personality personality, String companionName, java.awt.Color playerColor) {
+        model.initializeGame(playerName, personality, companionName, playerColor);
         view.setCompanionPersonality(model.getCompanion().getPersonality());
         view.setCharacterNames(model.getPlayer().getName(), model.getCompanion().getName());
+        view.setCharacterColors(model.getPlayer().getColor(), model.getCompanion().getColor());
         view.showGameScreen();
         startNewDialogue();
         view.updateFriendshipMeter(model.getFriendshipMeter().getValue(), model.getFriendshipMeter().getLevel());
