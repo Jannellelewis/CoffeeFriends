@@ -127,6 +127,8 @@ USED: I want the user to be able to customize the color of the character. In Cus
 
 RESULTS: i can choose my charcters color and it stays the whole game round. The companions color is randomly chosen
 
-CHANGES: the dialogue is still not fitting on the window so i asked: The dialogue is not fitting inside the window. Make sure that the message bubble is bigger than the window so the text can be seen (this is when i ran out of the copilot monthly chat requests so i switched to claude)
+CHANGES:  (this is when i ran out of the copilot monthly chat requests so i switched to windsurf and its not as good as copilot so)
+
+ERRORS:none
 
 ERRORS:
