@@ -138,7 +138,7 @@ USED: based on the files, the functions/methods and logic add a fucntion that de
 
 RESULTS: this was really hard to find where to put things, at least compared how i did it previously so there were errors
 
-CHANGES: 
+CHANGES: if your response is awkward it adds an overlay that says its awkward, but it only last a short time
 
 ERRORS: i had the message: Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problem: 
         The method setCharacterColors(Color, Color) is undefined for the type GameScreenPanel
