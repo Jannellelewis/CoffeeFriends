@@ -149,3 +149,30 @@ After that (p.9 mid error fix)it said that Exception in thread "AWT-EventQueue-0
 which i believe means  getGamePanel wasnt defined so i asked the ai: Now i am getting the error message: Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problem: 
         The method getGamePanel() is undefined for the type GameView        i believe this means i forgot to define getGamePanel or it was done incorrectly Please tell me what happened and fix it 
         (it said that it was supposed to be gamePanel.showAwkwardFeedback(); not getGamePanel)
+
+
+Prompt 10: 
+USED: in the ModelTester.java add a main method. It should create a `GameModel`, call its methods directly, and print `PASS` or `FAIL` for each check. Write tests for at least five behaviors: the player cannot give a gift until they reach level 3, the interaction ends after friendship reaches level 5, check that the user entered a valid hex color, check the user added names and test that the game can actually restart properly. No testing libraries — just plain Java.
+RESULTS: this is what terminal said: 
+        === CoffeeFriends Model Tests ===
+
+        PASS: No gift at level 1
+        PASS: No gift at level 2
+        PASS: Gift unlocked at level 3
+        PASS: Friendship ends at level 5
+        PASS: Valid hex color FF5733
+        PASS: Valid hex color 000000
+        PASS: Invalid hex ? too short
+        PASS: Invalid hex ? bad chars
+        PASS: Invalid hex ? has #
+        PASS: Non-blank player name accepted
+        PASS: Non-blank companion name accepted
+        PASS: Blank player name rejected
+        PASS: Whitespace-only name rejected
+        PASS: Restart resets friendship value to 0
+        PASS: Restart resets friendship level to 1
+        PASS: Restart clears gift flag
+
+        === Results: 16 passed, 0 failed ===
+CHANGES: when i initally ran that prompt it tested it for me and gave the resukts, not the code to input so i said ('no write the tests so i can put them into ModelTester.java') and then it worked
+ERRORS: not an error just had to claifying with my ai what i wanted, check changes
