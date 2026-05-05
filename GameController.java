@@ -14,10 +14,13 @@ public class GameController {
     );
     private int colorIndex = 0;
     private boolean awaitingLevelUpChoice = false;
+    // Add this field at the top of GameController, alongside colorIndex and awaitingLevelUpChoice:
+    private String currentDialogue = "";
 
     private void startNewDialogue() {
         GameModel.Personality companionPersonality = model.getCompanion().getPersonality();
         String dialogue = model.getDialogueBank().getRandomLine(companionPersonality);
+        currentDialogue = dialogue; // ← ADD THIS LINE
         view.updateDialogue(dialogue);
         List<String> responses = model.getDialogueBank().getResponseOptions(dialogue);
         view.setResponseLabels(responses.get(0), responses.get(1));
@@ -48,32 +51,41 @@ public class GameController {
             startNewDialogue();
             view.updateGiftButtonVisibility(model.getFriendshipMeter().getLevel());
         } else {
-            model.getFriendshipMeter().increment();
-            int val = model.getFriendshipMeter().getValue();
-            int maxXP = model.getFriendshipMeter().getXpNeededForLevel();
-            
-            if (val >= maxXP) {
-                model.getFriendshipMeter().levelUp();
-                int newLevel = model.getFriendshipMeter().getLevel();
-                
-                if (newLevel == 5 && !model.hasGivenGift()) {
-                    // Special ending: companion gives gift and leaves
-                    view.showCompanionLeavesScreen();
-                    return;
-                }
-                
-                colorIndex = (colorIndex + 1) % backgroundColors.size();
-                view.setBackgroundColor(backgroundColors.get(colorIndex));
-                view.updateDialogue("Yay! I'm so happy to get to know you better! Friendship Level " + newLevel + "!");
-                view.updateFriendshipMeter(0, newLevel);
-                awaitingLevelUpChoice = true;
-                view.showLevelUpChoices(newLevel >= 3 && !model.hasGivenGift());
-            } else {
-                view.updateFriendshipMeter(val, model.getFriendshipMeter().getLevel());
-                startNewDialogue();
+    boolean isBadResponse = model.getDialogueBank()
+        .isMismatchedResponse(currentDialogue, response);
+
+    if (isBadResponse) {
+        model.getFriendshipMeter().decrement();
+        int val = model.getFriendshipMeter().getValue();
+        view.updateFriendshipMeter(val, model.getFriendshipMeter().getLevel());
+        view.showAwkwardFeedback(); // ← tells the view to flash feedback
+        startNewDialogue();
+    } else {
+        model.getFriendshipMeter().increment();
+        int val = model.getFriendshipMeter().getValue();
+        int maxXP = model.getFriendshipMeter().getXpNeededForLevel();
+
+        if (val >= maxXP) {
+            model.getFriendshipMeter().levelUp();
+            int newLevel = model.getFriendshipMeter().getLevel();
+
+            if (newLevel == 5 && !model.hasGivenGift()) {
+                view.showCompanionLeavesScreen();
+                return;
             }
+
+            colorIndex = (colorIndex + 1) % backgroundColors.size();
+            view.setBackgroundColor(backgroundColors.get(colorIndex));
+            view.updateDialogue("Yay! I'm so happy to get to know you better! Friendship Level " + newLevel + "!");
+            view.updateFriendshipMeter(0, newLevel);
+            awaitingLevelUpChoice = true;
+            view.showLevelUpChoices(newLevel >= 3 && !model.hasGivenGift());
+        } else {
+            view.updateFriendshipMeter(val, model.getFriendshipMeter().getLevel());
+            startNewDialogue();
         }
     }
+}
 
     public void handleLevelUpChoice(String choice) {
         if (!awaitingLevelUpChoice) {

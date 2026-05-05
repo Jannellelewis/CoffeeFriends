@@ -20,11 +20,10 @@ public class GameScreenPanel extends JPanel {
     private int friendshipLevel = 1;
     private boolean endScreen = false;
     private boolean peakFriendship = false;
+    private boolean awkwardFlash = false;
     private boolean showGiftBanner = false;
     private boolean companionLeaves = false;
     private Color backgroundColor = new Color(255, 210, 220);
-    private Color playerColor = new Color(200, 100, 100);
-    private Color companionColor = new Color(120, 120, 200);
 
     public GameScreenPanel() {
         setPreferredSize(new Dimension(900, 520));
@@ -85,14 +84,13 @@ public class GameScreenPanel extends JPanel {
         repaint();
     }
 
-    public void setBackgroundColor(Color c) {
-        this.backgroundColor = c;
+    public void setAwkwardFlash(boolean flash) {
+        this.awkwardFlash = flash;
         repaint();
     }
 
-    public void setCharacterColors(Color playerColor, Color companionColor) {
-        this.playerColor = playerColor;
-        this.companionColor = companionColor;
+    public void setBackgroundColor(Color c) {
+        this.backgroundColor = c;
         repaint();
     }
 
@@ -157,13 +155,13 @@ public class GameScreenPanel extends JPanel {
         int bodyWidth = 80;
         int bodyHeight = 120;
 
-        g2.setColor(playerColor);
+        g2.setColor(new Color(200, 100, 100));
         g2.fillOval(playerX, characterY, bodyWidth, bodyHeight);
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("SansSerif", Font.BOLD, 16));
         g2.drawString(playerName, playerX + 2, characterY - 10 + animationOffset);
 
-        g2.setColor(companionColor);
+        g2.setColor(new Color(120, 120, 200));
         g2.fillOval(companionX, characterY, bodyWidth, bodyHeight);
         g2.setColor(Color.BLACK);
         g2.drawString(companionName, companionX + 2, characterY - 10 + animationOffset);
@@ -197,6 +195,16 @@ public class GameScreenPanel extends JPanel {
             g2.setFont(new Font("SansSerif", Font.BOLD, 18));
             g2.drawString("🎁 Gift Unlocked! Click the gift button to give it.", 50, 35);
         }
+        
+        if (awkwardFlash) {
+            g2.setColor(new Color(255, 80, 80, 80));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+            g2.setColor(new Color(200, 0, 0));
+            g2.setFont(new Font("SansSerif", Font.BOLD, 28));
+            g2.drawString("😬 That felt a little awkward...", getWidth() / 2 - 220, getHeight() / 2 - 20);
+            g2.setFont(new Font("SansSerif", Font.PLAIN, 16));
+            g2.drawString("Friendship went down!", getWidth() / 2 - 100, getHeight() / 2 + 20);
+        }
 
         drawSpeechBubble(g2, playerX - 10, characterY - 140 + animationOffset, 220, 60, "Choose a response below.");
         drawSpeechBubble(g2, companionX - 10, characterY - 140 + animationOffset, calculateBubbleWidth(companionDialogue), 60, companionDialogue);
@@ -205,8 +213,30 @@ public class GameScreenPanel extends JPanel {
     private int calculateBubbleWidth(String text) {
         FontMetrics fm = getFontMetrics(new Font("SansSerif", Font.PLAIN, 14));
         int textWidth = fm.stringWidth(text);
-        int maxWidth = Math.min(500, getWidth() - 100); // Leave some margin
-        return Math.max(150, Math.min(maxWidth, textWidth + 20));
+        int maxWidth = Math.min(380, getWidth() - 20);
+        return Math.max(180, Math.min(maxWidth, textWidth + 30));
+    }
+
+    /** Calculate the height a bubble needs to fully contain the wrapped text. */
+    private int calcBubbleHeight(Graphics2D g2, String text, int bubbleWidth) {
+        g2.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        FontMetrics fm = g2.getFontMetrics();
+        int lineHeight = fm.getHeight();
+        int innerWidth = bubbleWidth - 20;
+        String[] words = text.split(" ");
+        int lines = 1;
+        StringBuilder line = new StringBuilder();
+        for (String word : words) {
+            String test = line + word + " ";
+            if (fm.stringWidth(test) > innerWidth && line.length() > 0) {
+                lines++;
+                line = new StringBuilder(word + " ");
+            } else {
+                line = new StringBuilder(test);
+            }
+        }
+        int padding = 20; // top + bottom padding
+        return padding + lines * lineHeight + 10;
     }
 
     private void drawSpeechBubble(Graphics2D g2, int x, int y, int width, int height, String text) {
@@ -217,18 +247,22 @@ public class GameScreenPanel extends JPanel {
         g2.drawRoundRect(x, y, width, height, 20, 20);
         g2.setFont(new Font("SansSerif", Font.PLAIN, 14));
         FontMetrics fm = g2.getFontMetrics();
-        int textY = y + 20;
+        int textY = y + fm.getAscent() + 8;
+        int innerWidth = width - 20;
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         for (String word : words) {
-            if (fm.stringWidth(line + word) < width - 20) {
-                line.append(word).append(" ");
-            } else {
-                g2.drawString(line.toString(), x + 10, textY);
+            String test = line + word + " ";
+            if (fm.stringWidth(test) > innerWidth && line.length() > 0) {
+                g2.drawString(line.toString().trim(), x + 10, textY);
                 textY += fm.getHeight();
                 line = new StringBuilder(word + " ");
+            } else {
+                line = new StringBuilder(test);
             }
         }
-        g2.drawString(line.toString(), x + 10, textY);
+        if (line.length() > 0) {
+            g2.drawString(line.toString().trim(), x + 10, textY);
+        }
     }
 }

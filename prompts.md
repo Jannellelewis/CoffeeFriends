@@ -130,3 +130,17 @@ RESULTS: i can choose my charcters color and it stays the whole game round. The 
 CHANGES:  (this is when i ran out of the copilot monthly chat requests so i switched to windsurf and its not as good as copilot so)
 
 ERRORS:none
+
+
+
+Prompt 9:
+USED: based on the files, the functions/methods and logic add a fucntion that decreases the friendship meter if someone picks the wrong response to your companions personality. For example responding in a way that would make it awkward like shy to a cheerful companion and visc versa. Tell me where specifically to put each part of the code and why
+
+RESULTS: this was really hard to find where to put things, at least compared how i did it previously so there were errors
+
+CHANGES: 
+
+ERRORS: i had the message: Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problem: 
+        The method setCharacterColors(Color, Color) is undefined for the type GameScreenPanel
+I think this means i didnt set CharacterColors in GameScreenPanel so i asked the ai:  That returned this error: Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problem: 
+        The method setCharacterColors(Color, Color) is undefined for the type GameScreenPanel.     i believe that means i didnt set the Character colors, please fix it and let me know if i was correct. If i was wrong explain what happened

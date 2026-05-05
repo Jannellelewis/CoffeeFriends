@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import javax.swing.Timer;
 
 @SuppressWarnings("this-escape")
 public class GamePanel extends JPanel {
@@ -152,6 +153,16 @@ public class GamePanel extends JPanel {
         restartButton.setVisible(false);
         gameScreenPanel.setEndScreen(level);
         gameScreenPanel.repaint();
+    }
+
+    // Add this method to GamePanel, near showLevelUpChoices() and showEndScreen():
+    public void showAwkwardFeedback() {
+        gameScreenPanel.setAwkwardFlash(true);
+        Timer flashTimer = new Timer(1200, e -> {
+            gameScreenPanel.setAwkwardFlash(false);
+        });
+        flashTimer.setRepeats(false);
+        flashTimer.start();
     }
 
     public void showLevelUpChoices(boolean canGift) {

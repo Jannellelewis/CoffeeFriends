@@ -92,6 +92,12 @@ public class GameModel {
             value += increment;
         }
 
+        // Add directly after the increment() method:
+        public void decrement() {
+            int penalty = random.nextInt(3) + 1; // 1–3 XP penalty
+            value = Math.max(0, value - penalty);
+        }
+
         public void setValue(int value) {
             this.value = Math.max(0, value);
         }
@@ -117,6 +123,7 @@ public class GameModel {
     public static class DialogueBank {
         private final Map<Personality, List<String>> companionLines = new EnumMap<>(Personality.class);
         private final Map<String, List<String>> dialogueResponses = new HashMap<>();
+        private final Map<String, List<String>> mismatchedResponses = new HashMap<>();
         private final Random random = new Random();
 
         public DialogueBank() {
@@ -144,6 +151,18 @@ public class GameModel {
             dialogueResponses.put("This coffee shop feels safe with you here.", List.of("I'm glad you feel that way.", "It's comforting to be here."));
             dialogueResponses.put("I'm a little nervous, but I'm happy you're here.", List.of("No need to be nervous around me.", "I'm happy to be here with you."));
             dialogueResponses.put("Thank you for talking with me today.", List.of("You're welcome. It was nice.", "Of course, anytime."));
+
+            // Mismatched responses: cheerful companion lines get shy/cold replies
+            mismatchedResponses.put("What a bright day to share a latte together!", List.of("I guess... I'm not really a morning person.", "I'd rather just sit in silence."));
+            mismatchedResponses.put("I love chatting with you in this cozy coffee shop.", List.of("...I didn't really want to come today.", "Can we just not talk for a bit?"));
+            mismatchedResponses.put("Your smile makes the coffee taste sweeter.", List.of("I don't really smile much.", "That's a weird thing to say."));
+            mismatchedResponses.put("Let's plan our next adventure after this cup!", List.of("I'd rather just go home after this.", "Adventures sound exhausting."));
+
+            // Mismatched responses: shy companion lines get overly loud/pushy replies
+            mismatchedResponses.put("I like it when we sit quietly together.", List.of("Let's liven things up! Wanna shout across the café?", "Silence is boring, let's make some noise!"));
+            mismatchedResponses.put("This coffee shop feels safe with you here.", List.of("Don't be so clingy, it's just a coffee shop.", "I invited three more people, hope that's okay!"));
+            mismatchedResponses.put("I'm a little nervous, but I'm happy you're here.", List.of("Nervous? Just relax and be loud!", "Stop worrying and perform that song you know!"));
+            mismatchedResponses.put("Thank you for talking with me today.", List.of("We should've invited way more people!", "Next time let's make it a huge group hangout."));
         }
 
         public String getRandomLine(Personality personality) {
@@ -155,7 +174,29 @@ public class GameModel {
         }
 
         public List<String> getResponseOptions(String dialogue) {
-            return dialogueResponses.getOrDefault(dialogue, List.of("That's interesting.", "I agree."));
+            List<String> good = dialogueResponses.getOrDefault(dialogue, List.of("That's interesting.", "I agree."));
+            List<String> bad = mismatchedResponses.getOrDefault(dialogue, List.of());
+
+            if (!bad.isEmpty()) {
+                // One good response, one mismatched response — randomly assign to button 1 or 2
+                String badChoice = bad.get(random.nextInt(bad.size()));
+                if (random.nextBoolean()) {
+                    return List.of(good.get(0), badChoice);
+                } else {
+                    return List.of(badChoice, good.get(1 % good.size()));
+                }
+            }
+            return good;
+        }
+
+        // Add this method right after getResponseOptions():
+        public List<String> getMismatchedResponses(String dialogue) {
+            return mismatchedResponses.getOrDefault(dialogue, List.of());
+        }
+
+        public boolean isMismatchedResponse(String dialogue, String response) {
+            List<String> mismatches = mismatchedResponses.getOrDefault(dialogue, List.of());
+            return mismatches.contains(response);
         }
     }
 
