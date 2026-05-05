@@ -23,6 +23,8 @@ public class GameScreenPanel extends JPanel {
     private boolean awkwardFlash = false;
     private boolean showGiftBanner = false;
     private boolean companionLeaves = false;
+    private Color playerColor = new Color(200, 100, 100);
+    private Color companionColor = new Color(120, 120, 200);
     private Color backgroundColor = new Color(255, 210, 220);
 
     public GameScreenPanel() {
@@ -94,6 +96,13 @@ public class GameScreenPanel extends JPanel {
         repaint();
     }
 
+    // ADD this block immediately after (becomes lines 96-100):
+    public void setCharacterColors(Color playerColor, Color companionColor) {
+        this.playerColor = playerColor;
+        this.companionColor = companionColor;
+        repaint();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -155,13 +164,13 @@ public class GameScreenPanel extends JPanel {
         int bodyWidth = 80;
         int bodyHeight = 120;
 
-        g2.setColor(new Color(200, 100, 100));
+        g2.setColor(playerColor);
         g2.fillOval(playerX, characterY, bodyWidth, bodyHeight);
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("SansSerif", Font.BOLD, 16));
         g2.drawString(playerName, playerX + 2, characterY - 10 + animationOffset);
 
-        g2.setColor(new Color(120, 120, 200));
+        g2.setColor(companionColor);
         g2.fillOval(companionX, characterY, bodyWidth, bodyHeight);
         g2.setColor(Color.BLACK);
         g2.drawString(companionName, companionX + 2, characterY - 10 + animationOffset);

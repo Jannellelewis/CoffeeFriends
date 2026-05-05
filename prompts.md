@@ -144,3 +144,6 @@ ERRORS: i had the message: Exception in thread "AWT-EventQueue-0" java.lang.Erro
         The method setCharacterColors(Color, Color) is undefined for the type GameScreenPanel
 I think this means i didnt set CharacterColors in GameScreenPanel so i asked the ai:  That returned this error: Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problem: 
         The method setCharacterColors(Color, Color) is undefined for the type GameScreenPanel.     i believe that means i didnt set the Character colors, please fix it and let me know if i was correct. If i was wrong explain what happened
+After that it said that Exception in thread "AWT-EventQueue-0" java.lang.Error: Unresolved compilation problem: 
+        The method getGamePanel() is undefined for the type GameView
+which i believe means  getGamePanel wasnt defined so i asked the ai:

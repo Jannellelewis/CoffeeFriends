@@ -84,7 +84,8 @@ public class GameController {
             view.updateFriendshipMeter(val, model.getFriendshipMeter().getLevel());
             startNewDialogue();
         }
-    }
+    
+    }}
 }
 
     public void handleLevelUpChoice(String choice) {
