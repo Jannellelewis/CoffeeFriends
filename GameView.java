@@ -67,9 +67,8 @@ public class GameView extends JFrame {
     }
 
     public void showAwkwardFeedback() {
-        getGamePanel().showAwkwardFeedback();
+        gamePanel.showAwkwardFeedback();
     }
-
     public void setCompanionPersonality(GameModel.Personality personality) {
         customizationPanel.setCompanionPersonality(personality);
     }
